@@ -1129,23 +1129,71 @@ window.deleteBolo = deleteBolo;
 // AUDIO WARNING
 // ============================================
 
+// ============================================
+// AUDIO + VISUAL WARNING ALERT
+// ============================================
+
 function checkAndPlayWarning(civilian) {
     const warningFlags = (civilian.warning_flags || '').toLowerCase();
     const dangerousFlags = ['armed', 'dangerous', 'violent', 'mentally ill', 'suicidal', 'caution'];
-    
+
     const hasDangerousFlag = dangerousFlags.some(flag => warningFlags.includes(flag));
-    
-    if (civilian.is_bolo || hasDangerousFlag) {
+    const hasBolo = Number(civilian.is_bolo) === 1;
+
+    // Jeśli jest aktywne BOLO lub groźne flagi – emitujemy alert
+    if (hasBolo || hasDangerousFlag) {
         try {
+            // 🔊 Dźwięk ostrzegawczy
             const warningAudio = document.getElementById('warning-audio');
             if (warningAudio) {
                 warningAudio.currentTime = 0;
                 warningAudio.play().catch(err => {
-                    console.log('Audio autoplay blocked:', err);
+                    console.warn('Audio autoplay blocked:', err);
                 });
             }
+
+            // 🔴 Pojawia się belka ostrzegawcza nad wynikami Quick Lookup
+            const resultsDiv = document.getElementById('search-results');
+            const existingBar = document.getElementById('bolo-alert-bar');
+            if (!existingBar) {
+                const bar = document.createElement('div');
+                bar.id = 'bolo-alert-bar';
+                bar.style.position = 'fixed';
+                bar.style.top = '0';
+                bar.style.left = '0';
+                bar.style.width = '100%';
+                bar.style.padding = '1rem';
+                bar.style.zIndex = '9999';
+                bar.style.textAlign = 'center';
+                bar.style.fontWeight = 'bold';
+                bar.style.fontSize = '1.3rem';
+                bar.style.letterSpacing = '1px';
+                bar.style.color = '#fff';
+                bar.style.backgroundColor = 'rgba(220, 20, 60, 0.95)';
+                bar.style.animation = 'pulseWarning 1s infinite';
+                bar.innerHTML = '⚠️  ACTIVE BOLO  ⚠️';
+                document.body.appendChild(bar);
+            }
+
+            // usunięcie belki po 10 sekundach
+            setTimeout(() => {
+                const alertBar = document.getElementById('bolo-alert-bar');
+                if (alertBar) alertBar.remove();
+            }, 10000);
+
         } catch (error) {
-            console.error('Error playing warning audio:', error);
+            console.error('Error playing warning:', error);
         }
     }
 }
+
+// ✨ Animacja pulsowania (dopisujemy do CSS)
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes pulseWarning {
+  0%   { background-color: rgba(220, 20, 60, 1); }
+  50%  { background-color: rgba(255, 69, 0, 0.7); }
+  100% { background-color: rgba(220, 20, 60, 1); }
+}
+`;
+document.head.appendChild(style);
