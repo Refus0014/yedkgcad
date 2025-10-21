@@ -194,18 +194,19 @@ async function handleCivilianSubmit(e) {
     e.preventDefault();
     
     const civilianData = {
-        game_nick: document.getElementById('game-nick').value,
-        first_name: document.getElementById('first-name').value,
-        last_name: document.getElementById('last-name').value,
-        date_of_birth: document.getElementById('dob').value,
-        gender: document.getElementById('gender').value,
-        address: document.getElementById('address').value,
-        phone_number: document.getElementById('phone').value,
-        license_status: document.getElementById('license-status').value,
-        notes: document.getElementById('notes').value,
-        is_bolo: document.getElementById('is-bolo').value,
-        warning_flags: document.getElementById('warning-flags').value
-    };
+      game_nick: document.getElementById('game-nick').value,
+      first_name: document.getElementById('first-name').value,
+      last_name: document.getElementById('last-name').value,
+      date_of_birth: document.getElementById('dob').value,
+      gender: document.getElementById('gender').value,
+      address: document.getElementById('address').value,
+      phone_number: document.getElementById('phone').value,
+      license_status: document.getElementById('license-status').value,
+      notes: document.getElementById('notes').value,
+      // ‼️ gwarantuje że backend dostanie 0 / 1
+      is_bolo: parseInt(document.getElementById('is-bolo').value, 10) || 0,
+      warning_flags: document.getElementById('warning-flags').value
+    };    
 
     const civilianId = document.getElementById('civilian-id').value;
     const url = civilianId ? `${API_URL}/civilians/${civilianId}` : `${API_URL}/civilians`;
@@ -234,29 +235,37 @@ async function handleCivilianSubmit(e) {
 }
 
 async function editCivilian(id) {
-    try {
-        const response = await fetch(`${API_URL}/civilians/${id}`);
-        const civilian = await response.json();
+  try {
+    const response = await fetch(`${API_URL}/civilians/${id}`);
 
-        document.getElementById('civilian-id').value = civilian.id;
-        document.getElementById('game-nick').value = civilian.game_nick;
-        document.getElementById('first-name').value = civilian.first_name || '';
-        document.getElementById('last-name').value = civilian.last_name || '';
-        document.getElementById('dob').value = civilian.date_of_birth || '';
-        document.getElementById('gender').value = civilian.gender || '';
-        document.getElementById('address').value = civilian.address || '';
-        document.getElementById('phone').value = civilian.phone_number || '';
-        document.getElementById('license-status').value = civilian.license_status || 'Valid';
-        document.getElementById('notes').value = civilian.notes || '';
-        document.getElementById('is-bolo').value = civilian.is_bolo || 0;
-        document.getElementById('warning-flags').value = civilian.warning_flags || '';
-
-        document.getElementById('civilian-modal-title').textContent = 'Edit Civilian';
-        openModal('civilian-modal');
-    } catch (error) {
-        console.error('Error loading civilian:', error);
-        showNotification('Error loading civilian', 'error');
+    if (!response.ok) {
+      throw new Error(`Fetch failed: ${response.status}`);
     }
+
+    const civilian = await response.json();
+
+    // Bezpiecznie ustawiamy dane formularza.
+    document.getElementById('civilian-id').value = civilian.id;
+    document.getElementById('game-nick').value = civilian.game_nick || '';
+    document.getElementById('first-name').value = civilian.first_name || '';
+    document.getElementById('last-name').value = civilian.last_name || '';
+    document.getElementById('dob').value = civilian.date_of_birth || '';
+    document.getElementById('gender').value = civilian.gender || '';
+    document.getElementById('address').value = civilian.address || '';
+    document.getElementById('phone').value = civilian.phone_number || '';
+    document.getElementById('license-status').value = civilian.license_status || 'Valid';
+    document.getElementById('notes').value = civilian.notes || '';
+
+    // ✔️  Ujednolicone ustawienie BOLO - zawsze "0" lub "1", nigdy "true"/"false"
+    document.getElementById('is-bolo').value = Number(civilian.is_bolo) === 1 ? '1' : '0';
+    document.getElementById('warning-flags').value = civilian.warning_flags || '';
+
+    document.getElementById('civilian-modal-title').textContent = 'Edit Civilian';
+    openModal('civilian-modal');
+  } catch (error) {
+    console.error('Error loading civilian:', error);
+    showNotification('Error loading civilian details', 'error');
+  }
 }
 
 async function deleteCivilian(id, gameNick) {
