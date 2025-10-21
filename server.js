@@ -4,19 +4,17 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-// MySQL connection
 const dbConfig = {
-    host: 'sql.freedb.tech',
-    user: 'freedb_gigakox',
-    password: '24&8PjWrmhauVKZ',
-    database: 'freedb_ERLCusers'
+    host: 'db4free.net',
+    user: 'cwelcwelski',
+    password: 'cwelcwelski',
+    database: 'cwelcwelski'
 };
 
 let db;
@@ -26,100 +24,108 @@ async function initDatabase() {
         db = await mysql.createConnection(dbConfig);
         console.log('Connected to MySQL database.');
 
-        // Create tables if not exist
-        await db.query(`CREATE TABLE IF NOT EXISTS civilians (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            game_nick VARCHAR(255) UNIQUE NOT NULL,
-            first_name VARCHAR(255),
-            last_name VARCHAR(255),
-            date_of_birth DATE,
-            gender VARCHAR(50),
-            address TEXT,
-            phone_number VARCHAR(50),
-            license_status VARCHAR(50) DEFAULT 'Valid',
-            notes TEXT,
-            is_bolo TINYINT DEFAULT 0,
-            bolo_reason TEXT,
-            warning_flags TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )`);
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS civilians (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                game_nick VARCHAR(255) UNIQUE NOT NULL,
+                first_name VARCHAR(255),
+                last_name VARCHAR(255),
+                date_of_birth DATE,
+                gender VARCHAR(50),
+                address TEXT,
+                phone_number VARCHAR(50),
+                license_status VARCHAR(50) DEFAULT 'Valid',
+                notes TEXT,
+                is_bolo TINYINT DEFAULT 0,
+                bolo_reason TEXT,
+                warning_flags TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        `);
 
-        await db.query(`CREATE TABLE IF NOT EXISTS criminal_records (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            civilian_id INT NOT NULL,
-            record_number VARCHAR(255) UNIQUE NOT NULL,
-            incident_date DATE NOT NULL,
-            incident_time TIME,
-            location TEXT,
-            arresting_officer VARCHAR(255),
-            department VARCHAR(255),
-            charges TEXT NOT NULL,
-            narrative TEXT,
-            status VARCHAR(50) DEFAULT 'Active',
-            flags TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
-        )`);
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS criminal_records (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                civilian_id INT NOT NULL,
+                record_number VARCHAR(255) UNIQUE NOT NULL,
+                incident_date DATE NOT NULL,
+                incident_time TIME,
+                location TEXT,
+                arresting_officer VARCHAR(255),
+                department VARCHAR(255),
+                charges TEXT NOT NULL,
+                narrative TEXT,
+                status VARCHAR(50) DEFAULT 'Active',
+                flags TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
+            )
+        `);
 
-        await db.query(`CREATE TABLE IF NOT EXISTS vehicles (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            civilian_id INT,
-            plate VARCHAR(255) UNIQUE NOT NULL,
-            model VARCHAR(255) NOT NULL,
-            color VARCHAR(50),
-            registration_status VARCHAR(50) DEFAULT 'Valid',
-            insurance_status VARCHAR(50) DEFAULT 'Valid',
-            notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE SET NULL
-        )`);
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS vehicles (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                civilian_id INT,
+                plate VARCHAR(255) UNIQUE NOT NULL,
+                model VARCHAR(255) NOT NULL,
+                color VARCHAR(50),
+                registration_status VARCHAR(50) DEFAULT 'Valid',
+                insurance_status VARCHAR(50) DEFAULT 'Valid',
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE SET NULL
+            )
+        `);
 
-        await db.query(`CREATE TABLE IF NOT EXISTS citations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            civilian_id INT NOT NULL,
-            citation_number VARCHAR(255) UNIQUE NOT NULL,
-            citation_date DATE NOT NULL,
-            citation_time TIME,
-            location TEXT,
-            issuing_officer VARCHAR(255),
-            department VARCHAR(255),
-            violation TEXT NOT NULL,
-            fine_amount DECIMAL(10,2),
-            notes TEXT,
-            status VARCHAR(50) DEFAULT 'Unpaid',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
-        )`);
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS citations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                civilian_id INT NOT NULL,
+                citation_number VARCHAR(255) UNIQUE NOT NULL,
+                citation_date DATE NOT NULL,
+                citation_time TIME,
+                location TEXT,
+                issuing_officer VARCHAR(255),
+                department VARCHAR(255),
+                violation TEXT NOT NULL,
+                fine_amount DECIMAL(10,2),
+                notes TEXT,
+                status VARCHAR(50) DEFAULT 'Unpaid',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
+            )
+        `);
 
-        await db.query(`CREATE TABLE IF NOT EXISTS bolos (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            civilian_id INT NOT NULL,
-            bolo_number VARCHAR(255) UNIQUE NOT NULL,
-            reason TEXT NOT NULL,
-            description TEXT,
-            last_known_location TEXT,
-            issuing_officer VARCHAR(255),
-            department VARCHAR(255),
-            priority VARCHAR(50) DEFAULT 'Medium',
-            status VARCHAR(50) DEFAULT 'Active',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
-        )`);
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS bolos (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                civilian_id INT NOT NULL,
+                bolo_number VARCHAR(255) UNIQUE NOT NULL,
+                reason TEXT NOT NULL,
+                description TEXT,
+                last_known_location TEXT,
+                issuing_officer VARCHAR(255),
+                department VARCHAR(255),
+                priority VARCHAR(50) DEFAULT 'Medium',
+                status VARCHAR(50) DEFAULT 'Active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (civilian_id) REFERENCES civilians(id) ON DELETE CASCADE
+            )
+        `);
 
         console.log('Database tables initialized.');
     } catch (err) {
-        console.error('Error connecting to database:', err);
+        console.error('DB init error:', err);
     }
 }
 
-// Initialize DB
 initDatabase();
 
-// ==================== CIVILIAN ROUTES ====================
+// ==================== CIVILIANS ====================
 
 app.get('/api/civilians', async (req, res) => {
     const search = req.query.search || '';
@@ -128,45 +134,110 @@ app.get('/api/civilians', async (req, res) => {
             `SELECT * FROM civilians WHERE game_nick LIKE ? OR first_name LIKE ? OR last_name LIKE ? ORDER BY game_nick`,
             [`%${search}%`, `%${search}%`, `%${search}%`]
         );
+        console.log(`Fetched ${rows.length} civilians (search: "${search}")`);
         res.json(rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Get civilians error:', err);
+        res.status(500).json({ error: 'Failed to load civilians' });
     }
 });
 
 app.get('/api/civilians/:id', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM civilians WHERE id = ?', [req.params.id]);
-        if (!rows.length) return res.status(404).json({ error: 'Civilian not found' });
+        if (!rows.length) {
+            console.log(`Civilian not found: ${req.params.id}`);
+            return res.status(404).json({ error: 'Civilian not found' });
+        }
+        console.log(`Fetched civilian: ${rows[0].game_nick} (id: ${req.params.id})`);
         res.json(rows[0]);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Get civilian by ID error:', err);
+        res.status(500).json({ error: 'Failed to load civilian' });
     }
 });
 
 app.post('/api/civilians', async (req, res) => {
     const { game_nick, first_name, last_name, date_of_birth, gender, address, phone_number, license_status, notes, is_bolo, bolo_reason, warning_flags } = req.body;
+
     if (!game_nick) return res.status(400).json({ error: 'Game nick is required' });
 
     try {
         const [result] = await db.query(
-            `INSERT INTO civilians (game_nick, first_name, last_name, date_of_birth, gender, address, phone_number, license_status, notes, is_bolo, bolo_reason, warning_flags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [game_nick, first_name, last_name, date_of_birth, gender, address, phone_number, license_status, notes, is_bolo || 0, bolo_reason, warning_flags]
+            `INSERT INTO civilians 
+            (game_nick, first_name, last_name, date_of_birth, gender, address, phone_number, license_status, notes, is_bolo, bolo_reason, warning_flags)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                game_nick,
+                first_name || null,
+                last_name || null,
+                date_of_birth || null,
+                gender || null,
+                address || null,
+                phone_number || null,
+                license_status || 'Valid',
+                notes || null,
+                is_bolo ? 1 : 0,
+                bolo_reason || null,
+                warning_flags || null
+            ]
         );
+        console.log(`Added civilian: ${game_nick} (id: ${result.insertId})`);
         res.json({ id: result.insertId, message: 'Civilian added successfully' });
     } catch (err) {
+        console.error('Add civilian error:', err);
         if (err.code === 'ER_DUP_ENTRY') res.status(400).json({ error: 'Game nick already exists' });
-        else res.status(500).json({ error: err.message });
+        else res.status(500).json({ error: 'Failed to add civilian' });
     }
 });
 
-// Reszta CRUD dla civilian, records, vehicles, citations, bolos jest analogiczna: zamieniasz `db.run` i `db.all` na `await db.query(...)`, i używasz `[params]` jako parametrów zamiast `?` w SQLite.
-
-app.listen(PORT, () => {
-    console.log(`Sonoran CAD Replica server running on http://localhost:${PORT}`);
+app.put('/api/civilians/:id', async (req, res) => {
+    const { first_name, last_name, date_of_birth, gender, address, phone_number, license_status, notes, is_bolo, bolo_reason, warning_flags } = req.body;
+    try {
+        const [result] = await db.query(
+            `UPDATE civilians SET
+                first_name = ?, last_name = ?, date_of_birth = ?, gender = ?, address = ?, phone_number = ?, license_status = ?, notes = ?, is_bolo = ?, bolo_reason = ?, warning_flags = ?
+             WHERE id = ?`,
+            [
+                first_name || null,
+                last_name || null,
+                date_of_birth || null,
+                gender || null,
+                address || null,
+                phone_number || null,
+                license_status || 'Valid',
+                notes || null,
+                is_bolo ? 1 : 0,
+                bolo_reason || null,
+                warning_flags || null,
+                req.params.id
+            ]
+        );
+        console.log(`Updated civilian: id ${req.params.id}`);
+        res.json({ message: 'Civilian updated successfully' });
+    } catch (err) {
+        console.error('Update civilian error:', err);
+        res.status(500).json({ error: 'Failed to update civilian' });
+    }
 });
 
-// Graceful shutdown
+app.delete('/api/civilians/:id', async (req, res) => {
+    try {
+        const [result] = await db.query('DELETE FROM civilians WHERE id = ?', [req.params.id]);
+        console.log(`Deleted civilian: id ${req.params.id}`);
+        res.json({ message: 'Civilian deleted successfully' });
+    } catch (err) {
+        console.error('Delete civilian error:', err);
+        res.status(500).json({ error: 'Failed to delete civilian' });
+    }
+});
+
+// ==================== PLACEHOLDER CRUD ====================
+// Podobnie możesz zrobić CRUD dla: criminal_records, vehicles, citations, bolos
+// W tym samym stylu: logi + opcjonalne pola + proste komunikaty
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 process.on('SIGINT', async () => {
     try {
         await db.end();
