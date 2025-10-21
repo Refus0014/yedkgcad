@@ -1,5 +1,4 @@
-const API_URL = 'https://yedkgcad-production.up.railway.app/api';
-
+const API_URL = window.location.origin + '/api';
 // State management
 let currentCivilian = null;
 let currentRecord = null;
