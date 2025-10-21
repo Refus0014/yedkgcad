@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonoran CAD Replica - Computer-Aided Dispatch</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-shield-alt"></i>
+                <h1>CAD System</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-view="civilians">
+                    <i class="fas fa-users"></i>
+                    <span>Civilians</span>
+                </a>
+                <a href="#" class="nav-item" data-view="records">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Criminal Records</span>
+                </a>
+                <a href="#" class="nav-item" data-view="citations">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Citations</span>
+                </a>
+                <a href="#" class="nav-item" data-view="bolos">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>BOLOs</span>
+                </a>
+                <a href="#" class="nav-item" data-view="vehicles">
+                    <i class="fas fa-car"></i>
+                    <span>Vehicles</span>
+                </a>
+                <a href="#" class="nav-item" data-view="search">
+                    <i class="fas fa-search"></i>
+                    <span>Quick Search</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Sonoran CAD Replica v1.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h2 id="page-title">Civilians Database</h2>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="global-search" placeholder="Search...">
+                    </div>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Officer</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Civilians View -->
+            <div id="civilians-view" class="content-view active">
+                <div class="view-header">
+                    <button class="btn btn-primary" id="add-civilian-btn">
+                        <i class="fas fa-plus"></i> Add New Civilian
+                    </button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table" id="civilians-table">
+                        <thead>
+                            <tr>
+                                <th>Game Nick</th>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>License Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="civilians-tbody">
+                            <tr>
+                                <td colspan="6" class="no-data">No civilians found. Add one to get started.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Criminal Records View -->
+            <div id="records-view" class="content-view">
+                <div class="view-header">
+                    <button class="btn btn-primary" id="add-record-btn">
+                        <i class="fas fa-plus"></i> Add New Record
+                    </button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table" id="records-table">
+                        <thead>
+                            <tr>
+                                <th>Record #</th>
+                                <th>Civilian</th>
+                                <th>Date</th>
+                                <th>Charges</th>
+                                <th>Officer</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-tbody">
+                            <tr>
+                                <td colspan="7" class="no-data">No records found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Citations View -->
+            <div id="citations-view" class="content-view">
+                <div class="view-header">
+                    <button class="btn btn-primary" id="add-citation-btn">
+                        <i class="fas fa-plus"></i> Add New Citation
+                    </button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table" id="citations-table">
+                        <thead>
+                            <tr>
+                                <th>Citation #</th>
+                                <th>Civilian</th>
+                                <th>Date</th>
+                                <th>Violation</th>
+                                <th>Fine</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="citations-tbody">
+                            <tr>
+                                <td colspan="7" class="no-data">No citations found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- BOLOs View -->
+            <div id="bolos-view" class="content-view">
+                <div class="view-header">
+                    <button class="btn btn-primary" id="add-bolo-btn">
+                        <i class="fas fa-plus"></i> Add New BOLO
+                    </button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table" id="bolos-table">
+                        <thead>
+                            <tr>
+                                <th>BOLO #</th>
+                                <th>Civilian</th>
+                                <th>Reason</th>
+                                <th>Last Known Location</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bolos-tbody">
+                            <tr>
+                                <td colspan="7" class="no-data">No active BOLOs.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Vehicles View -->
+            <div id="vehicles-view" class="content-view">
+                <div class="view-header">
+                    <button class="btn btn-primary" id="add-vehicle-btn">
+                        <i class="fas fa-plus"></i> Add New Vehicle
+                    </button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table" id="vehicles-table">
+                        <thead>
+                            <tr>
+                                <th>Plate</th>
+                                <th>Model</th>
+                                <th>Color</th>
+                                <th>Owner</th>
+                                <th>Registration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicles-tbody">
+                            <tr>
+                                <td colspan="6" class="no-data">No vehicles found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Search View -->
+            <div id="search-view" class="content-view">
+                <div class="search-panel">
+                    <h3>Quick Lookup</h3>
+                    <div class="search-input-group">
+                        <input type="text" id="quick-search-input" placeholder="Enter game nick to search...">
+                        <button class="btn btn-primary" id="quick-search-btn">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div id="search-results" class="search-results"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add/Edit Civilian -->
+    <div id="civilian-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="civilian-modal-title">Add New Civilian</h3>
+                <button class="close-btn" onclick="closeModal('civilian-modal')">&times;</button>
+            </div>
+            <form id="civilian-form">
+                <input type="hidden" id="civilian-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="game-nick">Game Nick <span class="required">*</span></label>
+                        <input type="text" id="game-nick" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender">
+                            <option value="">Select...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address">Address</label>
+                        <input type="text" id="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="license-status">License Status</label>
+                        <select id="license-status">
+                            <option value="Valid">Valid</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Revoked">Revoked</option>
+                            <option value="Expired">Expired</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="is-bolo">BOLO Status</label>
+                        <select id="is-bolo">
+                            <option value="0">No</option>
+                            <option value="1">Yes - Active BOLO</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="warning-flags">Warning Flags (comma separated)</label>
+                        <input type="text" id="warning-flags" placeholder="e.g., Armed, Dangerous, Mentally Ill">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('civilian-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Civilian</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit Criminal Record -->
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="record-modal-title">Add New Criminal Record</h3>
+                <button class="close-btn" onclick="closeModal('record-modal')">&times;</button>
+            </div>
+            <form id="record-form">
+                <input type="hidden" id="record-id">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="civilian-search">Search Civilian <span class="required">*</span></label>
+                        <input type="text" id="civilian-search" placeholder="Type game nick to search..." autocomplete="off" required>
+                        <input type="hidden" id="civilian-select" required>
+                        <div id="civilian-search-results" class="search-dropdown"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-date">Incident Date <span class="required">*</span></label>
+                        <input type="date" id="incident-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-time">Incident Time</label>
+                        <input type="time" id="incident-time">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="e.g., Downtown Los Santos">
+                    </div>
+                    <div class="form-group">
+                        <label for="arresting-officer">Arresting Officer</label>
+                        <input type="text" id="arresting-officer">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" placeholder="e.g., LSPD">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="charges">Charges <span class="required">*</span></label>
+                        <textarea id="charges" rows="3" required placeholder="e.g., Grand Theft Auto, Assault"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="narrative">Narrative</label>
+                        <textarea id="narrative" rows="4" placeholder="Detailed description of the incident..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="record-status">Status</label>
+                        <select id="record-status">
+                            <option value="Active">Active</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="flags">Flags</label>
+                        <input type="text" id="flags" placeholder="e.g., Armed, Dangerous">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('record-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Add Vehicle -->
+    <div id="vehicle-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Vehicle</h3>
+                <button class="close-btn" onclick="closeModal('vehicle-modal')">&times;</button>
+            </div>
+            <form id="vehicle-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="vehicle-civilian">Owner</label>
+                        <select id="vehicle-civilian">
+                            <option value="">Select owner...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="plate">Plate <span class="required">*</span></label>
+                        <input type="text" id="plate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model <span class="required">*</span></label>
+                        <input type="text" id="model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input type="text" id="color">
+                    </div>
+                    <div class="form-group">
+                        <label for="registration-status">Registration</label>
+                        <select id="registration-status">
+                            <option value="Valid">Valid</option>
+                            <option value="Expired">Expired</option>
+                            <option value="Suspended">Suspended</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="insurance-status">Insurance</label>
+                        <select id="insurance-status">
+                            <option value="Valid">Valid</option>
+                            <option value="Expired">Expired</option>
+                            <option value="None">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="vehicle-notes">Notes</label>
+                        <textarea id="vehicle-notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('vehicle-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Vehicle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Civilian Details -->
+    <div id="civilian-details-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="civilian-details-title">Civilian Details</h3>
+                <button class="close-btn" onclick="closeModal('civilian-details-modal')">&times;</button>
+            </div>
+            <div id="civilian-details-content" class="details-content">
+                <!-- Content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit Citation -->
+    <div id="citation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="citation-modal-title">Add New Citation</h3>
+                <button class="close-btn" onclick="closeModal('citation-modal')">&times;</button>
+            </div>
+            <form id="citation-form">
+                <input type="hidden" id="citation-id">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="citation-civilian-search">Search Civilian <span class="required">*</span></label>
+                        <input type="text" id="citation-civilian-search" placeholder="Type game nick to search..." autocomplete="off" required>
+                        <input type="hidden" id="citation-civilian-select" required>
+                        <div id="citation-search-results" class="search-dropdown"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-date">Citation Date <span class="required">*</span></label>
+                        <input type="date" id="citation-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-time">Citation Time</label>
+                        <input type="time" id="citation-time">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="citation-location">Location</label>
+                        <input type="text" id="citation-location" placeholder="e.g., Main Street & 5th Ave">
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-officer">Issuing Officer</label>
+                        <input type="text" id="citation-officer">
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-department">Department</label>
+                        <input type="text" id="citation-department" placeholder="e.g., LSPD">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="citation-violation">Violation <span class="required">*</span></label>
+                        <textarea id="citation-violation" rows="2" required placeholder="e.g., Speeding 65 in a 45 zone"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-fine">Fine Amount ($)</label>
+                        <input type="number" id="citation-fine" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="citation-status">Status</label>
+                        <select id="citation-status">
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Dismissed">Dismissed</option>
+                            <option value="Warrant Issued">Warrant Issued</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="citation-notes">Notes</label>
+                        <textarea id="citation-notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('citation-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Citation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit BOLO -->
+    <div id="bolo-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="bolo-modal-title">Add New BOLO</h3>
+                <button class="close-btn" onclick="closeModal('bolo-modal')">&times;</button>
+            </div>
+            <form id="bolo-form">
+                <input type="hidden" id="bolo-id">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="bolo-civilian-search">Search Civilian <span class="required">*</span></label>
+                        <input type="text" id="bolo-civilian-search" placeholder="Type game nick to search..." autocomplete="off" required>
+                        <input type="hidden" id="bolo-civilian-select" required>
+                        <div id="bolo-search-results" class="search-dropdown"></div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="bolo-reason">Reason <span class="required">*</span></label>
+                        <input type="text" id="bolo-reason" required placeholder="e.g., Wanted for Grand Theft Auto">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="bolo-description">Description</label>
+                        <textarea id="bolo-description" rows="3" placeholder="Physical description, clothing, vehicle, etc."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="bolo-location">Last Known Location</label>
+                        <input type="text" id="bolo-location" placeholder="e.g., Downtown Los Santos">
+                    </div>
+                    <div class="form-group">
+                        <label for="bolo-officer">Issuing Officer</label>
+                        <input type="text" id="bolo-officer">
+                    </div>
+                    <div class="form-group">
+                        <label for="bolo-department">Department</label>
+                        <input type="text" id="bolo-department" placeholder="e.g., LSPD">
+                    </div>
+                    <div class="form-group">
+                        <label for="bolo-priority">Priority</label>
+                        <select id="bolo-priority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bolo-status">Status</label>
+                        <select id="bolo-status">
+                            <option value="Active" selected>Active</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bolo-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save BOLO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="warning-audio" preload="auto">
+        <source src="audio/warning.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
