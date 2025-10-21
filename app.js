@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'yedkgcad-production.up.railway.app/api';
 
 // State management
 let currentCivilian = null;
