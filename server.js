@@ -279,4 +279,17 @@ app.post('/api/vehicles', async (req,res)=>{
   res.json({message:'added'});
 });
 
+app.get('/api/civilians/:id', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM civilians WHERE id = ?', [req.params.id]);
+    if (!rows.length) return res.status(404).json({ error: 'Not found' });
+
+    const civ = rows[0];
+    civ.is_bolo = civ.is_bolo ? 1 : 0;   // 👈 zamiana null/true/false → 1/0
+    res.json(civ);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching civilian' });
+  }
+});
+
 app.listen(PORT,()=>console.log('Server running on port',PORT));
